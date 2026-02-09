@@ -6,11 +6,17 @@ from asteroid import Asteroid
 from asteroidfield import AsteroidField
 from shot import Shot
 
-
+def draw_score(surface, score_value, font):
+    score_text = font.render(f"Score: {score_value}", True, "white")
+    surface.blit(score_text, (10, 10))
 
 def main():
     pygame.init()
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT)) # type: ignore
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    pygame.display.set_caption("Asteroids - as made by HaikuKing")
+    font = pygame.font.Font(None, 36)
+    score = 0
+
     clock = pygame.time.Clock()
 
     updatable = pygame.sprite.Group()
@@ -24,7 +30,7 @@ def main():
     AsteroidField.containers = updatable
     asteroid_field = AsteroidField()
 
-    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2) # type: ignore
+    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
 
     dt = 0
 
@@ -41,13 +47,15 @@ def main():
                 if rock.collision(bullet) == True:
                     bullet.kill()
                     rock.split()
+                    score += 50
             if rock.collision(player) == True:
-                print("Game over!")
+                print(f"\nGame over!\nYour Final Score: {score}")
                 sys.exit()
 
         for object in drawable:
             object.draw(screen)
 
+        draw_score(screen, score, font)
         pygame.display.flip()
         dt = clock.tick(60) / 1000
         
